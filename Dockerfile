@@ -25,10 +25,10 @@ COPY . .
 RUN python train.py || echo "Skipping training"
 
 # Expose correct port for Render
-EXPOSE 10000
+EXPOSE 8000
 
 # Health check (correct URL)
-HEALTHCHECK CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:10000/docs')" || exit 1
+HEALTHCHECK CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/docs')" || exit 1
 
 # Run API
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "10000"]
+CMD python -m api.main
