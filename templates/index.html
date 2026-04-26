@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Prediction</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            color: rgba(255,255,255,0.8);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        input {
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+        
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 24px;
+            border-radius: 12px;
+            display: none;
+        }
+        
+        .result.diabetic {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+            color: white;
+        }
+        
+        .result.non-diabetic {
+            background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+            color: white;
+        }
+        
+        .result h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .result-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .result-item {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+        
+        .result-item span {
+            display: block;
+        }
+        
+        .result-item .label {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+        
+        .result-item .value {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .links {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .links a {
+            color: #667eea;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 500;
+        }
+        
+        .links a:hover {
+            text-decoration: underline;
+        }
+        
+        .error {
+            background: #fff5f5;
+            border: 1px solid #fc8181;
+            color: #c53030;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🩺 Diabetes Prediction</h1>
+        <p class="subtitle">Enter patient health metrics to predict diabetes risk</p>
+        
+        <div class="card">
+            <form id="predictionForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="Pregnancies">Pregnancies</label>
+                        <input type="number" id="Pregnancies" name="Pregnancies" 
+                               min="0" max="20" value="1" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="Glucose">Glucose (mg/dL)</label>
+                        <input type="number" id="Glucose" name="Glucose" 
+                               min="0" max="300" value="120" step="0.1" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="BloodPressure">Blood Pressure (mm Hg)</label>
+                        <input type="number" id="BloodPressure" name="BloodPressure" 
+                               min="0" max="200" value="70" step="0.1" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="SkinThickness">Skin Thickness (mm)</label>
+                        <input type="number" id="SkinThickness" name="SkinThickness" 
+                               min="0" max="100" value="20" step="0.1" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="Insulin">Insulin (μU/mL)</label>
+                        <input type="number" id="Insulin" name="Insulin" 
+                               min="0" max="900" value="80" step="0.1" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="BMI">BMI (kg/m²)</label>
+                        <input type="number" id="BMI" name="BMI" 
+                               min="0" max="70" value="25" step="0.1" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="DiabetesPedigreeFunction">Diabetes Pedigree</label>
+                        <input type="number" id="DiabetesPedigreeFunction" 
+                               name="DiabetesPedigreeFunction" 
+                               min="0" max="3" value="0.5" step="0.001" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="Age">Age (years)</label>
+                        <input type="number" id="Age" name="Age" 
+                               min="1" max="120" value="30" required>
+                    </div>
+                </div>
+                
+                <button type="submit" id="submitBtn">Predict Diabetes Risk</button>
+            </form>
+            
+            <div id="result" class="result">
+                <h2 id="resultLabel"></h2>
+                <div class="result-details">
+                    <div class="result-item">
+                        <span class="label">Confidence</span>
+                        <span class="value" id="confidence"></span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label">Diabetic Probability</span>
+                        <span class="value" id="probDiabetic"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="error" class="error"></div>
+            
+            <div class="links">
+                <a href="/docs">📚 API Documentation</a>
+                <a href="/redoc">📖 ReDoc</a>
+                <a href="/health">💚 Health Check</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            const resultDiv = document.getElementById('result');
+            const errorDiv = document.getElementById('error');
+            
+            btn.disabled = true;
+            btn.textContent = 'Predicting...';
+            resultDiv.style.display = 'none';
+            errorDiv.style.display = 'none';
+            
+            const formData = new FormData(e.target);
+            const data = {};
+            
+            formData.forEach((value, key) => {
+                data[key] = key === 'Pregnancies' || key === 'Age' 
+                    ? parseInt(value) 
+                    : parseFloat(value);
+            });
+            
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                if (!response.ok) {
+                    const err = await response.json();
+                    throw new Error(err.detail || 'Prediction failed');
+                }
+                
+                const result = await response.json();
+                
+                resultDiv.className = 'result ' + 
+                    (result.prediction === 1 ? 'diabetic' : 'non-diabetic');
+                document.getElementById('resultLabel').textContent = 
+                    result.prediction === 1 
+                        ? '⚠️ High Risk: Diabetic' 
+                        : '✅ Low Risk: Non-Diabetic';
+                document.getElementById('confidence').textContent = 
+                    (result.confidence * 100).toFixed(1) + '%';
+                document.getElementById('probDiabetic').textContent = 
+                    (result.probability_diabetic * 100).toFixed(1) + '%';
+                
+                resultDiv.style.display = 'block';
+                
+            } catch (err) {
+                errorDiv.textContent = '❌ Error: ' + err.message;
+                errorDiv.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Predict Diabetes Risk';
+            }
+        });
+    </script>
+</body>
+</html>
